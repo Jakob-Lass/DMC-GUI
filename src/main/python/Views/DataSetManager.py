@@ -43,7 +43,7 @@ def setupDataSet(self): # Set up main features for Gui regarding the dataset wid
     def deleteFunction(self,gui,idx):
         gui.DataSetModel.delete(idx[0])
         self.DataFileModel.layoutChanged.emit()
-        self.stateMachine.run()
+        self.state_changed.emit()
 
     def contextMenu(view,event,gui):
         # Generate a context menu that opens on right click
@@ -106,12 +106,12 @@ def setupDataSet_binning_comboBox(self):
 def selectedDataSetChanged(self,*args,**kwargs):
     self.DataFileModel.updateCurrentDataSetIndex()
     self.selectedDataFileChanged()
-    self.stateMachine.run()
+    self.state_changed.emit()
 
 def selectedDataFileChanged(self,*args,**kwargs):
     self.DataFileModel.layoutChanged.emit()
     self.updateDataFileLabels()
-    self.stateMachine.run()
+    self.state_changed.emit()
 
 def DataSet_NewDataSet_button_function(self):
     ds = GuiDataSet(name='Added')
@@ -119,16 +119,16 @@ def DataSet_NewDataSet_button_function(self):
 
     self.DataSetModel.append(ds)
     self.update()
-    self.stateMachine.run()
+    self.state_changed.emit()
 
 def DataSet_DeleteDataSet_button_function(self):
     self.DataSetModel.delete(self.ui.DataSet_DataSets_listView.selectedIndexes()[0])
     self.DataFileModel.layoutChanged.emit()
-    self.stateMachine.run()
+    self.state_changed.emit()
     
 def DataSet_DeleteFiles_button_function(self):
     self.DataFileModel.delete()
-    self.stateMachine.run()
+    self.state_changed.emit()
 
 def DataSet_DoubleClick_Selection_function(self,index,*args,**kwargs):
     self.ui.DataSet_DataSets_listView.edit(index)
@@ -138,8 +138,8 @@ def DataFile_DoubleClick_Selection_function(self,index,*args,**kwargs):
 
 @ProgressBarDecoratorArguments(runningText='Adding Data Files',completedText='Data Files Added')
 def DataSet_AddFiles_button_function(self):
-    if not self.stateMachine.requireStateByName('Partial'):
-        return False
+    #if not self.stateMachine.requireStateByName('Partial'):
+    #    return False
     
     folder = self.getCurrentDirectory()
     files, _ = QtWidgets.QFileDialog.getOpenFileNames(self,"Open data Files", folder,"HDF (*.hdf);;NXS (*.nxs);;All Files (*)")
@@ -154,15 +154,15 @@ def DataSet_AddFiles_button_function(self):
     self.setCurrentDirectory(folder)
 
     self.update()
-    self.stateMachine.run()
+    self.state_changed.emit()
     return True
 
 @ProgressBarDecoratorArguments(runningText='Converting data files',completedText='Conversion Done')
 def DataSet_convertData_button_function(self):    
     #  Should add a check if a data set is selected
     
-    if not self.stateMachine.requireStateByName('Raw'):
-        return False
+    #if not self.stateMachine.requireStateByName('Raw'):
+    #    return False
     
     val = self.convert()
     self.DataFileModel.layoutChanged.emit()
@@ -186,15 +186,15 @@ def convert(self):
         dialog.exec_()
     
     self.DataFileModel.layoutChanged.emit()
-    self.stateMachine.run()
+    self.state_changed.emit()
     return True
     
 
 
 def updateDataFileLabels(self):
     self.DataFileInfoModel.layoutChanged.emit()
-    self.updateRaw1DCutSpinBoxes()
-    self.updateBinningComboBox()
+    #self.updateRaw1DCutSpinBoxes()
+    #self.updateBinningComboBox()
 
 def DataSet_binning_comboBox_Changed(self):
     idx = self.ui.DataSet_binning_comboBox.currentIndex()
