@@ -16,9 +16,9 @@ from PyQt5 import QtWidgets,uic, QtCore, QtGui
 import numpy as np
 
 def setupDataSet(self): # Set up main features for Gui regarding the dataset widgets
-    self.ui.DataSet_convertData_button.clicked.connect(self.DataSet_convertData_button_function)
-    self.ui.DataSet_convertData_button.setToolTip('Convert selected Dataset')
-    self.ui.DataSet_convertData_button.setStatusTip(self.ui.DataSet_convertData_button.toolTip())
+    # self.ui.DataSet_convertData_button.clicked.connect(self.DataSet_convertData_button_function)
+    # self.ui.DataSet_convertData_button.setToolTip('Convert selected Dataset')
+    # self.ui.DataSet_convertData_button.setStatusTip(self.ui.DataSet_convertData_button.toolTip())
 
     self.ui.DataSet_NewDataSet_button.clicked.connect(self.DataSet_NewDataSet_button_function)
     self.ui.DataSet_NewDataSet_button.setToolTip('Add new Dataset')
@@ -157,17 +157,17 @@ def DataSet_AddFiles_button_function(self):
     self.state_changed.emit()
     return True
 
-@ProgressBarDecoratorArguments(runningText='Converting data files',completedText='Conversion Done')
-def DataSet_convertData_button_function(self):    
-    #  Should add a check if a data set is selected
+# @ProgressBarDecoratorArguments(runningText='Converting data files',completedText='Conversion Done')
+# def DataSet_convertData_button_function(self):    
+#     #  Should add a check if a data set is selected
     
-    #if not self.stateMachine.requireStateByName('Raw'):
-    #    return False
+#     #if not self.stateMachine.requireStateByName('Raw'):
+#     #    return False
     
-    val = self.convert()
-    self.DataFileModel.layoutChanged.emit()
-    self.DataFileInfoModel.layoutChanged.emit()
-    return val
+#     val = self.convert()
+#     self.DataFileModel.layoutChanged.emit()
+#     self.DataFileInfoModel.layoutChanged.emit()
+#     return val
     
     
 def convert(self):
@@ -275,9 +275,6 @@ class DataSetManager(DataSetManagerBase, DataSetManagerForm):
         self.guiWindow.DataFile_DoubleClick_Selection_function = lambda index:DataFile_DoubleClick_Selection_function(self.guiWindow,index)
 
         self.guiWindow.DataSet_AddFiles_button_function = lambda: DataSet_AddFiles_button_function(self.guiWindow)
-
-        self.guiWindow.DataSet_convertData_button_function = lambda: DataSet_convertData_button_function(self.guiWindow)
-        self.guiWindow.convert = lambda: convert(self.guiWindow)
 
         self.guiWindow.updateDataFileLabels = lambda: updateDataFileLabels(self.guiWindow)
 

@@ -132,7 +132,6 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         self.current_timer = None
         
         self.blockItems = [getattr(self.ui,item) for item in self.ui.__dict__ if '_button' in item[-7:]] # Collect all items to block on calls
-        self.blockItems.append(self.ui.DataSet_binning_comboBox)
 
         self.lineEdits = [getattr(self.ui,item) for item in self.ui.__dict__ if '_lineEdit' in item[-9:]] # Collect all lineedits
         self.radioButtons = [getattr(self.ui,item) for item in self.ui.__dict__ if '_radioButton' in item] # Collect all radiobuttons
