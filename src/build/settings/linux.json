@@ -1,0 +1,6 @@
+{
+    "categories": "Education;",
+    "description": "Graphical user interface for the DMCpy software. Documentation and further information can be found at https://www.psi.ch/en/sinq/dmc/data-treatment. Please do cite this package with the DOI and article found at the website.",
+    "author_email": "jakob.lass@psi.ch",
+    "url": "https://github.com/Jakob-Lass/DMCpy"
+}

@@ -1,0 +1,59 @@
+Linux setup:
+
+requirements in addition to those of the application:
+pip install fbs PyQt5 PyInstaller==3.4 setuptools<45.0.0
+change last version = xxx to =0.17 in /home/lass/anaconda3/envs/fbsevn/lib/python3.6/site-packages/importlib_metadata/__init__.py
+make distribution (fbs freeze + fbs installer)
+
+
+Windows:
+Virtual Machine Manager
+Download image from https://www.microsoft.com/en-us/software-download/windows10ISO
+Setup Virtual Machine Manager with new partition
+https://www.youtube.com/watch?v=jLRmVNWOrgo
+conda create --name distribute python==3.6 geos numpy scipy shapely
+
+install MJOLNIR
+pip install fbs PyQt5 PyInstaller==3.4 setuptools==44.1.0
+change last version = xxx to =0.17 in C:\Users\jakob\miniconda3\envs\distribute\Lib\site-packages\importlib_metadata __init__.py
+Installation of msvcr100.dll from https://www.microsoft.com/en-us/download/details.aspx?id=14632
+Install NSIS from https://nsis.sourceforge.io/Download
+Add NSIS to local path by: set PATH=C:\LOCATION\OF\NSIS;%PATH% (set PATH=C:\Program Files (x86)\NSIS;%PATH%)
+
+Windows install v2:
+For an install to be able to generate installers and freeze one needs to make use of the base virtual environment through anaconda. Otherwise the dependencies will be copied wrongly into the installer and it will not (I checked this EXTENSIVELY, and it just won't) work.
+
+Shareable folder: https://www.techrepublic.com/article/how-to-set-up-quick-and-easy-file-sharing-with-samba/ with SECURED on LASS
+
+
+Accessing local files: Run Virt Machine Manager and type: sudo virt-viewer --connect=qemu:///session --domain-name win10, in preferences under files choose folder to share
+
+
+Virtual environments used:
+arch (need to install boto3 through pip)
+ubuntu (need to install boto3 through pip)
+fedora (need to install boto3 through pip)
+
+Building for each distribution:
+fbs runvm [name]
+fbs release
+
+Installation guide arch:
+curl -O https://fbs.sh/jakoblass/MJOLNIRGui/public-key.gpg && sudo pacman-key --add public-key.gpg && sudo pacman-key --lsign-key B6CC03BFA225CFFC7D1338CBCCF04E13EECDED58 && rm public-key.gpg
+echo -e '\n[MJOLNIRGui]\nServer = https://fbs.sh/jakoblass/MJOLNIRGui/arch' | sudo tee -a /etc/pacman.conf
+sudo pacman -Syu mjolnirgui
+
+Installation guide ubuntu:
+sudo apt-get install apt-transport-https
+wget -qO - https://fbs.sh/jakoblass/MJOLNIRGui/public-key.gpg | sudo apt-key add -
+echo 'deb [arch=amd64] https://fbs.sh/jakoblass/MJOLNIRGui/deb stable main' | sudo tee /etc/apt/sources.list.d/mjolnirgui.list
+sudo apt-get update
+sudo apt-get install mjolnirgui
+
+Installation guide fedora/CentOS:
+sudo rpm -v --import https://fbs.sh/jakoblass/MJOLNIRGui/public-key.gpg
+sudo dnf config-manager --add-repo https://fbs.sh/jakoblass/MJOLNIRGui/rpm/MJOLNIRGui.repo
+sudo dnf install mjolnirgui
+(On CentOS, replace 'dnf' by 'yum' and 'dnf config-manager' by 'yum-config-manager'.)
+
+

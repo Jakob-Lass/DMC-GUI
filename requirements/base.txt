@@ -1,0 +1,4 @@
+DMCpy>=0.1.4
+PyQt5-sip >= 12.8.0
+boto3
+

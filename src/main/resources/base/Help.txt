@@ -1,0 +1,15 @@
+﻿
+The Gui is split into two main parts: the upper concering data files and sets, and the lower, which concers data plotting and visualization.
+
+Simple start:
+- To start, create a new DataSet by clicking the highlighted button in the top left corner.
+- Add data files by clicking the highlighted data file button in the top center.
+- The added files can be converted by pressing the convert button.
+- When all of the above steps have successfully been followed plots can now be generated.
+
+
+Instead of going through the hoops described above, save the gui state into a file by entering files>Save GUI state or ctrl+s. This file can then later be loaded. Notice that this file does not contain the data, but only a description of the file location and conversion.
+
+
+Currently no further help exists for DMC -.- sorry
+

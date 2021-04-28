@@ -1,0 +1,17 @@
+DMCGui Version {DMCGui}
+DMCpy Version {DMCpy}
+Python Version {PythonVersion}
+
+DMCGui is a developed GUI application dedicated
+to the DMCpy package. It is meant to provide an interface to 
+many of the features found in the software suite.
+
+Some icons by Yusuke Kamiyamane. Licensed under a Creative Commons 
+Attribution 3.0 License. See https://p.yusukekamiyamane.com/
+
+The graphical user interface has been developed by
+Jakob Lass
+
+The GUI is licensed under the GNU General Public License v3.0.
+
+
