@@ -60,7 +60,7 @@ home = str(Path.home())
 
 class DMCMainWindow(QtWidgets.QMainWindow):
     mask_changed = QtCore.pyqtSignal()
-    state_changed = QtCore.pyqtSignal(str,str,name='stateChanged')
+    state_changed = QtCore.pyqtSignal()
     def __init__(self,AppContext):
 
         super(DMCMainWindow, self).__init__()
@@ -149,12 +149,12 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         #self.update()
         self.setupMenu()
         self.update()
-        #self.setupStateMachine()
+        self.state_changed.emit()
         self.update()
         #self.stateMachine.run()
         self.update()
         #self.loadFolder() # Load last folder as default 
-        #self.loadedGuiSettings = None
+        self.loadedGuiSettings = None
         self.ui.menubar.setNativeMenuBar(False)
         
         if sys.platform.lower() == 'darwin':
@@ -405,9 +405,8 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         for i,ds in enumerate(self.DataSetModel.dataSets):
             dsDict = {'name':ds.name}
             
-            localstring = [df.fileLocation if df.type != 'nxs' else df.original_file.fileLocation for df in ds]
+            localstring = [os.path.join(df.folder,df.fileName) for df in ds]
             dsDict['files']=localstring
-            dsDict['binning'] = [None if df.type != 'nxs' else df.binning for df in ds]
             saveString.append(dsDict)
             if updateProgressBar: self.setProgressBarValue((i+1))
 
@@ -483,7 +482,7 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         self.update()
         dataSetString = loadSetting(settingsFile,'dataSet')
 
-        totalFiles = np.sum([len(dsDict['files'])+np.sum(1-np.array([d is None for d in dsDict['binning']]))+1 for dsDict in dataSetString])+1
+        totalFiles = np.sum([len(dsDict['files'])+1 for dsDict in dataSetString])+1
         # Get estimate of total number of data files
         self.setProgressBarMaximum(totalFiles)
         counter = 0
