@@ -561,6 +561,17 @@ def formatVector(array):
         else:
             return M_tools.generateLabel(a)
 
+def formatValue(array,formatString = '{:.2f} [{:.2f}  -  {:.2f}]'):
+    if hasattr(array,'__len__'):
+        if len(array)>1:
+            array = np.concatenate(array)
+            mean = np.mean(array)
+            max_ = np.max(array)
+            min_ = np.min(array)
+            return formatString.format(mean,min_,max_)
+    while hasattr(array,'__len__'):
+        array=array[0]
+    return str(array)
 
 def formatRaw(array):
     if len(array) == 1:
@@ -569,26 +580,26 @@ def formatRaw(array):
 
 
 Info = namedtuple('Info','location baseText formatter')
-name = Info('sample/name','Sample: ',formatTextArray)
-projectionVector1 = Info('sample/projectionVector1','Projection 1: ',formatVector)
-projectionVector2 = Info('sample/projectionVector2','Projection 2: ',formatVector)
-A3 = Info('A3','A3 [deg]: ',formatValueArray)
-A4 = Info('A4','A4 [deg]: ',formatValueArray)
-magneticField = Info('magneticField','Mag [B]: ',formatValueArray)
-temperature = Info('temperature','Temperature [K]: ',formatValueArray)
-scanCommand = Info('scanCommand','Command: ',formatTextArray)
-scanSteps = Info('scanSteps','Scan steps: ',formatRaw)
-scanParameters = Info('scanParameters','Parameter: ',formatTextArrayAdder)
+name = Info('sample/sample_name','Sample: ',formatTextArray)
+#projectionVector1 = Info('sample/projectionVector1','Projection 1: ',formatVector)
+#projectionVector2 = Info('sample/projectionVector2','Projection 2: ',formatVector)
+A3 = Info('sample/sample_table_rotation','A3 [deg]: ',formatValue)
+twoTheta = Info('twoTheta','2 theta [deg]: ',formatValueArray)
+#A4 = Info('A4','A4 [deg]: ',formatValueArray)
+#magneticField = Info('sample.sample_magneticField','Mag [B]: ',formatValueArray)
+temperature = Info('sample/sample_temperature','Temperature [K]: ',formatValueArray)
+#scanCommand = Info('scanCommand','Command: ',formatTextArray)
+scanSteps = Info('DMC/DMC_BF3_Detector/Step','Detector Steps: ',formatValueArray)
+#scanParameters = Info('scanParameters','Parameter: ',formatTextArrayAdder)
 comment = Info('comment','Comment: ',formatTextArray)
-binning = Info('binning','Binning: ',formatRaw)
-Ei = Info('Ei','Ei [meV]: ',formatValueArray)
-countingTime = Info('Time', 'Scan step time [s]: ',formatValueArray)
-startTime = Info('startTime', 'Start time: ', formatTextArrayAdder)
-endTime = Info('endTime', 'End time: ', formatTextArrayAdder)
+#binning = Info('binning','Binning: ',formatRaw)
+Lambda = Info('waveLength','Wavelength [1/AA]: ',formatValueArray)
+countingTime = Info('time', 'Scan step time [s]: ',formatValueArray)
+startTime = Info('start_time', 'Start time: ', formatTextArrayAdder)
+#endTime = Info('endTime', 'End time: ', formatTextArrayAdder)
 
-settings = {'sample/name':name,'sample/projectionVector1':projectionVector1,'sample/projectionVector2':projectionVector2,'Ei':Ei, 'A3':A3,'A4':A4, 'magneticField':magneticField,'temperature':temperature,
-            'scanCommand':scanCommand, 'scanSteps':scanSteps, 'scanParameters':scanParameters, 'comment':comment, 'binning':binning,
-            'Time':countingTime,'startTime':startTime, 'endTime':endTime}
+settings = {'sample/sample_name':name,'waveLength':Lambda, 'sample/sample_table_rotation':A3,'twoTheta':twoTheta,'sample/sample_temperature':temperature,
+            'DMC/DMC_BF3_Detector/Step':scanSteps, 'comment':comment, 'time':countingTime,'start_time':startTime}
 
 class DataFileInfoModel(QtCore.QAbstractListModel):
     def __init__(self, *args, DataSet_filenames_listView=None,dataSetModel=None,DataSet_DataSets_listView=None,dataFileModel=None,guiWindow=None, **kwargs):
@@ -632,6 +643,7 @@ class DataFileInfoModel(QtCore.QAbstractListModel):
         if not np.all(inside):
             outside = np.array(1-inside,dtype=bool)
             warnings.warn('Wanted setting(s) {} not found. Allowed are {}'.format(newSettings[outside],settings.keys()))
+            print('Possible settings are',self.possibleSettings)
         self._infos = [settings[I] for I in newSettings[inside]]
 
 
