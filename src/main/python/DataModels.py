@@ -564,7 +564,10 @@ def formatVector(array):
 def formatValue(array,formatString = '{:.2f} [{:.2f}  -  {:.2f}]'):
     if hasattr(array,'__len__'):
         if len(array)>1:
-            array = np.concatenate(array)
+            try:
+                array = np.concatenate(array)
+            except ValueError:
+                array = np.array(array)
             mean = np.mean(array)
             max_ = np.max(array)
             min_ = np.min(array)
@@ -593,13 +596,14 @@ scanSteps = Info('DMC/DMC_BF3_Detector/Step','Detector Steps: ',formatValueArray
 #scanParameters = Info('scanParameters','Parameter: ',formatTextArrayAdder)
 comment = Info('comment','Comment: ',formatTextArray)
 #binning = Info('binning','Binning: ',formatRaw)
-Lambda = Info('waveLength','Wavelength [1/AA]: ',formatValueArray)
-countingTime = Info('time', 'Scan step time [s]: ',formatValueArray)
+Lambda = Info('waveLength','Wavelength [1/AA]: ',formatValue)
+countingTime = Info('time', 'Scan step time [s]: ',formatValue)
 startTime = Info('start_time', 'Start time: ', formatTextArrayAdder)
+monitor = Info('monitor','Monitor count: ', formatValue)
 #endTime = Info('endTime', 'End time: ', formatTextArrayAdder)
 
 settings = {'sample/sample_name':name,'waveLength':Lambda, 'sample/sample_table_rotation':A3,'twoTheta':twoTheta,'sample/sample_temperature':temperature,
-            'DMC/DMC_BF3_Detector/Step':scanSteps, 'comment':comment, 'time':countingTime,'start_time':startTime}
+            'DMC/DMC_BF3_Detector/Step':scanSteps, 'comment':comment, 'time':countingTime,'start_time':startTime,'monitor':monitor}
 
 class DataFileInfoModel(QtCore.QAbstractListModel):
     def __init__(self, *args, DataSet_filenames_listView=None,dataSetModel=None,DataSet_DataSets_listView=None,dataFileModel=None,guiWindow=None, **kwargs):
