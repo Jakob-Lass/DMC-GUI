@@ -22,8 +22,9 @@ class GuiDataSet(DataSet.DataSet):
                 
 class GuiDataFile(DataFile.DataFile):
     def __init__(self,fileLocation, **kwargs):
-        super(GuiDataFile,self).__init__(fileLocation=fileLocation,**kwargs)
-        
+        super(GuiDataFile,self).__init__(filePath=fileLocation,**kwargs)
+        self.name = self.fileName
+        self.type = 'hdf'
 
     def setData(self,column,value):
         if column == 0: self.name = value
