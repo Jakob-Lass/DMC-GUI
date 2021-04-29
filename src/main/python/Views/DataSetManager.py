@@ -5,9 +5,11 @@ try:
     from DMCGui.src.main.python.DataModels import DataSetModel,DataFileModel,DataFileInfoModel,settings
     from DMCGui.src.main.python.DMC_Data import GuiDataFile,GuiDataSet
     from DMCGui.src.main.python._tools import ProgressBarDecoratorArguments
+    from DMCGui.src.main.python.GuiStates import States
 except ImportError:
     from DataModels import DataSetModel,DataFileModel,DataFileInfoModel,settings
     from DMC_Data import GuiDataFile,GuiDataSet
+    from GuiStates import States,highlightStyle,normalStyle
     from _tools import ProgressBarDecoratorArguments
 
 
@@ -299,6 +301,7 @@ class DataSetManager(DataSetManagerBase, DataSetManagerForm):
         #self.guiWindow.setupDataSet_binning_comboBox()
 
         #self.guiWindow.mask_changed.connect(self.testCall)
+        self.guiWindow.state_changed.connect(self.guiStateChanged)
 
     @QtCore.pyqtSlot()
     def testCall(self):
@@ -307,3 +310,14 @@ class DataSetManager(DataSetManagerBase, DataSetManagerForm):
         currentDS = self.guiWindow.DataSetModel.getCurrentDataSet()
         if not currentDS is None:
             currentDS.mask = mask
+
+    def guiStateChanged(self,newState):
+        if newState == States.EMPTY:
+            self.guiWindow.ui.DataSet_NewDataSet_button.setStyleSheet(highlightStyle)
+        else:
+            self.guiWindow.ui.DataSet_NewDataSet_button.setStyleSheet(normalStyle)
+
+        if newState == States.RAW:
+            self.guiWindow.ui.DataSet_AddFiles_button.setStyleSheet(highlightStyle)
+        else:
+            self.guiWindow.ui.DataSet_AddFiles_button.setStyleSheet(normalStyle)

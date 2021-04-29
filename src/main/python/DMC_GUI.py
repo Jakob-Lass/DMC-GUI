@@ -29,7 +29,7 @@ try:
     from DMC_Data import GuiDataFile,GuiDataSet
     from DataModels import DataSetModel,DataFileModel
 #    from StateMachine import StateMachine
-    from GuiStates import empty,partial,raw,converted
+    from GuiStates import States
     from AboutDialog import AboutDialog
     from HelpDialog import HelpDialog
 #    from generateScripts import initGenerateScript,setupGenerateScript
@@ -43,28 +43,28 @@ except ModuleNotFoundError:
     from DMCGui.src.main.python.Views.collapsibleBox import CollapsibleBox
     from DMCGui.src.main.python.DMC_Data import GuiDataFile,GuiDataSet
     from DMCGui.src.main.python.DataModels import DataSetModel,DataFileModel
+    from DMCGui.src.main.python.GuiStates import States
 #    from DMCGui.src.main.python.StateMachine import StateMachine
-    from DMCGui.src.main.python.GuiStates import empty,partial,raw,converted
     from DMCGui.src.main.python.AboutDialog import AboutDialog
     from DMCGui.src.main.python.HelpDialog import HelpDialog
 #    from DMCGui.src.main.python.generateScripts import initGenerateScript,setupGenerateScript
     from DMCGui.src.main.python._tools import loadSetting,updateSetting,ProgressBarDecoratorArguments
 
 import sys
-
+from enum import Enum
 
 from pathlib import Path
 home = str(Path.home())
 
 
-
 class DMCMainWindow(QtWidgets.QMainWindow):
     mask_changed = QtCore.pyqtSignal()
-    state_changed = QtCore.pyqtSignal()
+    state_changed = QtCore.pyqtSignal(Enum)
     def __init__(self,AppContext):
 
         super(DMCMainWindow, self).__init__()
 
+        self.currentState = States.STARTUP
         self.ui = Ui_MainWindow()
         self.AppContext = AppContext
         self.version = self.AppContext.build_settings['version']   
@@ -155,7 +155,6 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         #self.loadFolder() # Load last folder as default 
         self.loadedGuiSettings = None
         self.ui.menubar.setNativeMenuBar(False)
-        print('self',self)
         
         if sys.platform.lower() == 'darwin':
         ## Update image of arrows to correct style on mac
@@ -702,8 +701,21 @@ class DMCMainWindow(QtWidgets.QMainWindow):
             
     def updateGuiState(self):
         """Method to be called to emit gui state changed signal"""
-        print('Updating Gui state!')
-        self.state_changed.emit()
+        
+        previous = self.currentState
+        if self.DataSetModel.rowCount(None)==0:
+            self.currentState = States.EMPTY
+        elif self.DataFileModel.rowCount(None)==0:
+            self.currentState = States.RAW
+        else:
+            self.currentState = States.FULL
+
+        if self.currentState == previous: # Nothing actually changed in this call
+            print('Nothing changed... Stil in ',previous)
+        else:
+            print('Changing from {} to {}'.format(previous,self.currentState))
+            
+            self.state_changed.emit(self.currentState)
 
     def molarMassTool(self):
         molecularCalculationManager = MolecularCalculationManager()
