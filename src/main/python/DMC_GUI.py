@@ -148,13 +148,14 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         #self.update()
         self.setupMenu()
         self.update()
-        self.state_changed.emit()
+        self.updateGuiState()
         self.update()
         #self.stateMachine.run()
         self.update()
         #self.loadFolder() # Load last folder as default 
         self.loadedGuiSettings = None
         self.ui.menubar.setNativeMenuBar(False)
+        print('self',self)
         
         if sys.platform.lower() == 'darwin':
         ## Update image of arrows to correct style on mac
@@ -699,6 +700,11 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         else:
             return
             
+    def updateGuiState(self):
+        """Method to be called to emit gui state changed signal"""
+        print('Updating Gui state!')
+        self.state_changed.emit()
+
     def molarMassTool(self):
         molecularCalculationManager = MolecularCalculationManager()
         self.windows.append(molecularCalculationManager)

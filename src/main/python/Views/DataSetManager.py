@@ -43,7 +43,7 @@ def setupDataSet(self): # Set up main features for Gui regarding the dataset wid
     def deleteFunction(self,gui,idx):
         gui.DataSetModel.delete(idx[0])
         self.DataFileModel.layoutChanged.emit()
-        self.state_changed.emit()
+        self.updateGuiState()
 
     def contextMenu(view,event,gui):
         # Generate a context menu that opens on right click
@@ -106,12 +106,12 @@ def setupDataSet_binning_comboBox(self):
 def selectedDataSetChanged(self,*args,**kwargs):
     self.DataFileModel.updateCurrentDataSetIndex()
     self.selectedDataFileChanged()
-    self.state_changed.emit()
+    self.updateGuiState()
 
 def selectedDataFileChanged(self,*args,**kwargs):
     self.DataFileModel.layoutChanged.emit()
     self.updateDataFileLabels()
-    self.state_changed.emit()
+    self.updateGuiState()
 
 def DataSet_NewDataSet_button_function(self):
     ds = GuiDataSet(name='Added')
@@ -119,16 +119,16 @@ def DataSet_NewDataSet_button_function(self):
 
     self.DataSetModel.append(ds)
     self.update()
-    self.state_changed.emit()
+    self.updateGuiState()
 
 def DataSet_DeleteDataSet_button_function(self):
     self.DataSetModel.delete(self.ui.DataSet_DataSets_listView.selectedIndexes()[0])
     self.DataFileModel.layoutChanged.emit()
-    self.state_changed.emit()
+    self.updateGuiState()
     
 def DataSet_DeleteFiles_button_function(self):
     self.DataFileModel.delete()
-    self.state_changed.emit()
+    self.updateGuiState()
 
 def DataSet_DoubleClick_Selection_function(self,index,*args,**kwargs):
     self.ui.DataSet_DataSets_listView.edit(index)
@@ -154,7 +154,7 @@ def DataSet_AddFiles_button_function(self):
     self.setCurrentDirectory(folder)
 
     self.update()
-    self.state_changed.emit()
+    self.updateGuiState()
     return True
 
 # @ProgressBarDecoratorArguments(runningText='Converting data files',completedText='Conversion Done')
@@ -186,7 +186,7 @@ def convert(self):
         dialog.exec_()
     
     self.DataFileModel.layoutChanged.emit()
-    self.state_changed.emit()
+    self.updateGuiState()
     return True
     
 
