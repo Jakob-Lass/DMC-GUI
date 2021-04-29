@@ -321,3 +321,5 @@ class DataSetManager(DataSetManagerBase, DataSetManagerForm):
             self.guiWindow.ui.DataSet_AddFiles_button.setStyleSheet(highlightStyle)
         else:
             self.guiWindow.ui.DataSet_AddFiles_button.setStyleSheet(normalStyle)
+
+        self.guiWindow.updateDataFileLabels()
