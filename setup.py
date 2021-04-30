@@ -24,7 +24,7 @@ for f in settingsFiles:
 
 
 
-home = os.path.join(_here,'MJOLNIRGui')
+home = os.path.join(_here,'DMCGui')
 packages = [x[0] for x in os.walk(home) if x[0][-1]!='_']
 
 packages = [os.path.relpath(p,_here) for p in packages]
@@ -44,7 +44,7 @@ setup(
     package_data={'': ['*']},
     include_package_data=True,
     entry_points = {
-        "console_scripts": ['DMCGui = DMCGui.src.main.python.MJOLNIR_GUI:main']
+        "console_scripts": ['DMCGui = DMCGui.src.main.python.DMC_GUI:main']
         },
     python_requires='>=3.5',
     install_requires=['pip>=20','sip>=5.3','PyQt5-sip','PyQt5','DMCPy>=0.1.4'], 

@@ -9,7 +9,7 @@ import warnings
 from DMCpy import _tools as M_tools
 
 try:
-    from DMCGui.src.main.python.MJOLNIR_Data import GuiDataFile
+    from DMCGui.src.main.python.DMC_Data import GuiDataFile
 except ImportError:
     from  DMC_Data import GuiDataFile
 
