@@ -134,9 +134,6 @@
        <layout class="QVBoxLayout" name="verticalLayout_11">
         <item>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="DataOverview_CAxisMin_spinBox"/>
-          </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
@@ -145,7 +142,10 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="DataOverview_CAxisMax_spinBox"/>
+           <widget class="QLineEdit" name="DataOverview_CAxisMax_lineEdit"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="DataOverview_CAxisMin_lineEdit"/>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_6">

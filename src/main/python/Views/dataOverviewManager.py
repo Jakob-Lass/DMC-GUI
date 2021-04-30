@@ -50,7 +50,7 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
         self.guiWindow.dataOverviewManager_setCAxis_button_function = lambda:plotOverview(self.guiWindow)
         self.guiWindow.dataOverviewManager_updateGrid_function = lambda value=None:updateGrid(self.guiWindow,value)
         self.guiWindow.dataOverviewManager_updateTitlefunction = lambda title=None:updateTitle(self.guiWindow,title)
-        self.guiWindow.dataOverviewManager_updateCLim_function = lambda cmin=None,cmax=None:updateCLim(self.guiWindow,cmin,cmax)
+        self.guiWindow.dataOverviewManager_updateCLim_function = lambda cmin=None,cmax=None:updateCLim(self.guiWindow,cmin=cmin,cmax=cmax)
         self.guiWindow.dataOverviewManager_updateColorbar_function = lambda value=None:updateColorbar(self.guiWindow,value)
         #self.guiWindow.dataOverviewManager_extractInputs = lambda:extractInputs(self.guiWindow)
 
@@ -63,12 +63,14 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
         self.guiWindow.ui.DataOverview_plot_button.clicked.connect(self.guiWindow.dataOverviewManager_setCAxis_button_function)
         self.guiWindow.state_changed.connect(self.guiStateChanged)
 
-        self.guiWindow.ui.DataOverview_CAxisMin_spinBox.valueChanged.connect(self.guiWindow.dataOverviewManager_updateCLim_function)
-        self.guiWindow.ui.DataOverview_CAxisMax_spinBox.valueChanged.connect(self.guiWindow.dataOverviewManager_updateCLim_function)
+        self.guiWindow.ui.DataOverview_CAxisMin_lineEdit.editingFinished.connect(lambda cmin=None:self.guiWindow.dataOverviewManager_updateCLim_function(cmin=cmin))
+        self.guiWindow.ui.DataOverview_CAxisMax_lineEdit.editingFinished.connect(lambda cmax=None:self.guiWindow.dataOverviewManager_updateCLim_function(cmax=cmax))
 
         self.guiWindow.ui.DataOverview_Colorbar_checkBox.stateChanged.connect(self.guiWindow.dataOverviewManager_updateColorbar_function)
 
         self.guiWindow.ui.DataOverview_Grid_checkBox.stateChanged.connect(self.guiWindow.dataOverviewManager_updateGrid_function)
+
+        self.guiWindow.ui.DataOverview_SetTitle_lineEdit.editingFinished.connect(self.guiWindow.dataOverviewManager_updateTitlefunction)
 
         
 
@@ -94,8 +96,8 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
                       'thetaStep': self.guiWindow.ui.DataOverview_TwoThetaBinningStep_spinBox.value(),
                       'thetaStop': self.guiWindow.ui.DataOverview_TwoThetaBinningStop_spinBox.value(),
   
-                      'vmin': self.guiWindow.ui.DataOverview_CAxisMin_spinBox.value(),
-                      'vmax': self.guiWindow.ui.DataOverview_CAxisMax_spinBox.value(),
+                      'vmin': float(self.guiWindow.ui.DataOverview_CAxisMin_lineEdit.text()),
+                      'vmax': float(self.guiWindow.ui.DataOverview_CAxisMax_lineEdit.text()),
                       'colorbar': self.guiWindow.ui.DataOverview_Colorbar_checkBox.isChecked(),
   
                       'grid': self.guiWindow.ui.DataOverview_Grid_checkBox.isChecked(),
@@ -130,7 +132,7 @@ def plotOverview(self):
 
     self.dataOverviewManager_updateGrid_function(grid)
     self.dataOverviewManager_updateTitlefunction(title=title)
-    self.dataOverviewManager_updateCLim_function(vmin,vmax)
+    self.dataOverviewManager_updateCLim_function(cmin=vmin,cmax=vmax)
     self.dataOverviewManager_updateColorbar_function(colorbar)
 
     self.windows.append(AX[0].get_figure())
@@ -151,13 +153,13 @@ def updateCLim(self,cmin=None,cmax=None):
     if hasattr(self,'plotOverviewAxes'): # Check if a plotOverview has been created
         AX = self.plotOverviewAxes
 
-        if hasattr(AX[0],'set_clim'):
+        if hasattr(AX[0],'_imshow'):
             if cmin is None:
-                cmin = self.guiWindow.ui.DataOverview_CAxisMin_spinBox.value()
+                cmin = float(self.ui.DataOverview_CAxisMin_lineEdit.text())
             if cmax is None:
-                cmax = self.guiWindow.ui.DataOverview_CAxisMax_spinBox.value()
-
-            AX[0].set_clim(cmin,cmax)
+                cmax = float(self.ui.DataOverview_CAxisMax_lineEdit.text())
+            print(cmin,cmax)
+            AX[0]._imshow.set_clim(cmin,cmax)
     
 
 
@@ -166,7 +168,7 @@ def updateTitle(self,title=None):
         AX = self.plotOverviewAxes
 
         if title is None:
-            title = self.guiWindow.ui.DataOverview_SetTitle_lineEdit.text()
+            title = self.ui.DataOverview_SetTitle_lineEdit.text()
         
         fig = AX[0].get_figure()
         fig.suptitle(title)
