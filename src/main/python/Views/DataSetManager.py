@@ -5,7 +5,7 @@ try:
     from DMCGui.src.main.python.DataModels import DataSetModel,DataFileModel,DataFileInfoModel,settings
     from DMCGui.src.main.python.DMC_Data import GuiDataFile,GuiDataSet
     from DMCGui.src.main.python._tools import ProgressBarDecoratorArguments
-    from DMCGui.src.main.python.GuiStates import States
+    from DMCGui.src.main.python.GuiStates import States,highlightStyle,normalStyle
 except ImportError:
     from DataModels import DataSetModel,DataFileModel,DataFileInfoModel,settings
     from DMC_Data import GuiDataFile,GuiDataSet
@@ -99,11 +99,6 @@ def setupDataFile(self): # Set up main features for Gui regarding the datafile w
 
     self.ui.DataSet_filenames_listView.contextMenuEvent = lambda event: contextMenuDataFiles(self.ui.DataSet_filenames_listView,event,self)
     
-
-def setupDataSet_binning_comboBox(self):
-    self.ui.DataSet_binning_comboBox.reset = lambda:DataSet_binning_comboBoxReset(self.ui.DataSet_binning_comboBox)
-    self.ui.DataSet_binning_comboBox.reset()
-    self.ui.DataSet_binning_comboBox.activated.connect(self.DataSet_binning_comboBox_Changed)
 
 def selectedDataSetChanged(self,*args,**kwargs):
     self.DataFileModel.updateCurrentDataSetIndex()
