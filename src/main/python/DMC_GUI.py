@@ -5,6 +5,9 @@ try:
 except:
     pass
 
+# choose backend for matplotlib to be Qt5Agg. If not, no plots can be made :'-(
+import matplotlib
+matplotlib.use('Qt5Agg')
 
 from DMCpy import _tools # Useful tools useful across DMC
 try:
@@ -25,6 +28,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, Qt
 try:
     from Views.main import Ui_MainWindow
     from Views.DataSetManager import DataSetManager
+    from Views.dataOverviewManager import dataOverviewManager
     from Views.collapsibleBox import CollapsibleBox
     from DMC_Data import GuiDataFile,GuiDataSet
     from DataModels import DataSetModel,DataFileModel
@@ -41,6 +45,7 @@ except ModuleNotFoundError:
     from DMCGui.src.main.python.Views.main import Ui_MainWindow
     from DMCGui.src.main.python.Views.DataSetManager import DataSetManager
     from DMCGui.src.main.python.Views.collapsibleBox import CollapsibleBox
+    from DMCGui.src.main.python.Views.dataOverviewManager import dataOverviewManager
     from DMCGui.src.main.python.DMC_Data import GuiDataFile,GuiDataSet
     from DMCGui.src.main.python.DataModels import DataSetModel,DataFileModel
     from DMCGui.src.main.python.GuiStates import States
@@ -99,9 +104,9 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         self.views.append(self.ui.dataSetManager)
 
         # Lists of views in shown order
-        self.nameList = []# Currently empty'View3D','QE line','Q plane','1D cuts','1D raw data','Masking'] # 'Normalization'
-        self.viewClasses = []#View3DManager,QELineManager,QPlaneManager,Cut1DManager,Raw1DManager]#[View3D,View3D,View3D,Cut1D,Raw1D] # NormalizationManager
-        self.startState = []#True,False,False,False,True,False] # If not collapsed #False
+        self.nameList = ["Data Overview"]# Currently empty'View3D','QE line','Q plane','1D cuts','1D raw data','Masking'] # 'Normalization'
+        self.viewClasses = [dataOverviewManager]#View3DManager,QELineManager,QPlaneManager,Cut1DManager,Raw1DManager]#[View3D,View3D,View3D,Cut1D,Raw1D] # NormalizationManager
+        self.startState = [True]#True,False,False,False,True,False] # If not collapsed #False
 
         # Find correct layout to insert views
         vlay = QtWidgets.QVBoxLayout(self.ui.collapsibleContainer)
@@ -525,8 +530,8 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         self.loadGuiSettings(file=settingsFile)
         self.loadLineEdits(file=settingsFile)
         self.loadRadioButtons(file=settingsFile)
-        # self.loadSpinBoxes(file=settingsFile)
-        # self.loadCheckBoxes(file=settingsFile)
+        self.loadSpinBoxes(file=settingsFile)
+        self.loadCheckBoxes(file=settingsFile)
         self.DataSetModel.layoutChanged.emit()
         self.DataFileInfoModel.layoutChanged.emit()
         self.DataFileModel.updateCurrentDataSetIndex()
@@ -711,9 +716,9 @@ class DMCMainWindow(QtWidgets.QMainWindow):
             self.currentState = States.FULL
 
         if self.currentState == previous: # Nothing actually changed in this call
-            print('Nothing changed... Stil in ',previous)
+            pass#print('Nothing changed... Stil in ',previous)
         else:
-            print('Changing from {} to {}'.format(previous,self.currentState))
+            #print('Changing from {} to {}'.format(previous,self.currentState))
             
             self.state_changed.emit(self.currentState)
 
