@@ -309,9 +309,11 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         
         
         if res == QtWidgets.QMessageBox.Save:
-            self.saveCurrentGui()
-            self.closeWindows()
-            event.accept()
+            if self.saveCurrentGui() is True: # Successful saving
+                self.closeWindows()
+                event.accept()
+            else:
+                event.ignore()
         elif res == QtWidgets.QMessageBox.No:
             self.closeWindows()
             event.accept()
