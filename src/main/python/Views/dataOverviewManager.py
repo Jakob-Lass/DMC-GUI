@@ -49,9 +49,11 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
     def initdataOverviewManager(self):    
         self.guiWindow.dataOverviewManager_setCAxis_button_function = lambda:plotOverview(self.guiWindow)
         self.guiWindow.dataOverviewManager_updateGrid_function = lambda value=None:updateGrid(self.guiWindow,value)
-        self.guiWindow.dataOverviewManager_updateTitlefunction = lambda title=None:updateTitle(self.guiWindow,title)
+        self.guiWindow.dataOverviewManager_updateTitle_function = lambda title=None:updateTitle(self.guiWindow,title)
         self.guiWindow.dataOverviewManager_updateCLim_function = lambda cmin=None,cmax=None:updateCLim(self.guiWindow,cmin=cmin,cmax=cmax)
         self.guiWindow.dataOverviewManager_updateColorbar_function = lambda value=None:updateColorbar(self.guiWindow,value)
+        self.guiWindow.dataOverviewManager_updateFMT_function = lambda fmt=None:updateFMT(self.guiWindow,fmt)
+        self.guiWindow.dataOverviewManager_AutoBin_function = lambda:findAutoBin(self.guiWindow)
         #self.guiWindow.dataOverviewManager_extractInputs = lambda:extractInputs(self.guiWindow)
 
 
@@ -70,16 +72,20 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
 
         self.guiWindow.ui.DataOverview_Grid_checkBox.stateChanged.connect(self.guiWindow.dataOverviewManager_updateGrid_function)
 
-        self.guiWindow.ui.DataOverview_SetTitle_lineEdit.editingFinished.connect(self.guiWindow.dataOverviewManager_updateTitlefunction)
+        self.guiWindow.ui.DataOverview_SetTitle_lineEdit.editingFinished.connect(self.guiWindow.dataOverviewManager_updateTitle_function)
+        self.guiWindow.ui.DataOverview_fmt_lineEdit.editingFinished.connect(self.guiWindow.dataOverviewManager_updateFMT_function)
 
+        self.guiWindow.ui.DataOverview_autoBin_button.clicked.connect(self.guiWindow.dataOverviewManager_AutoBin_function)
         
 
     def guiStateChanged(self,newState):
         if not newState == States.FULL:
            self.guiWindow.ui.DataOverview_plot_button.setEnabled(False)
+           self.guiWindow.ui.DataOverview_autoBin_button.setEnabled(False)
            self.guiWindow.ui.DataOverview_plot_button.setStyleSheet(normalStyle)
            return
 
+        self.guiWindow.ui.DataOverview_autoBin_button.setEnabled(True)
         self.guiWindow.ui.DataOverview_plot_button.setEnabled(True)
         self.guiWindow.ui.DataOverview_plot_button.setStyleSheet(highlightStyle)
 
@@ -131,7 +137,7 @@ def plotOverview(self):
     self.plotOverviewAxes = AX
 
     self.dataOverviewManager_updateGrid_function(grid)
-    self.dataOverviewManager_updateTitlefunction(title=title)
+    self.dataOverviewManager_updateTitle_function(title=title)
     self.dataOverviewManager_updateCLim_function(cmin=vmin,cmax=vmax)
     self.dataOverviewManager_updateColorbar_function(colorbar)
 
@@ -158,10 +164,31 @@ def updateCLim(self,cmin=None,cmax=None):
                 cmin = float(self.ui.DataOverview_CAxisMin_lineEdit.text())
             if cmax is None:
                 cmax = float(self.ui.DataOverview_CAxisMax_lineEdit.text())
-            print(cmin,cmax)
             AX[0]._imshow.set_clim(cmin,cmax)
     
 
+def updateFMT(self,fmt=None):
+    if hasattr(self,'plotOverviewAxes'):
+        AX = self.plotOverviewAxes
+
+        if fmt is None:
+            fmt = self.ui.DataOverview_fmt_lineEdit.text()
+
+        if hasattr(AX[0],'_errorbar'): # If contains an errorbar, redo the fmt.
+            oldFMT = AX[0].fmt
+            AX[0].fmt = fmt
+            try:
+                AX[0].plotSpectrum(AX[0].index)
+            except ValueError:
+                AX[0].fmt = oldFMT
+                AX[0].plotSpectrum(AX[0].index)
+        
+def findAutoBin(self):
+    ds = self.DataSetModel.getCurrentDataSet()
+    minTwoTheta,maxTwoTheta = [f(ds.correctedTwoTheta) for f in [np.nanmin,np.nanmax]]
+    self.ui.DataOverview_TwoThetaBinningStart_spinBox.setValue(minTwoTheta)
+    self.ui.DataOverview_TwoThetaBinningStop_spinBox.setValue(maxTwoTheta)
+        
 
 def updateTitle(self,title=None):
     if hasattr(self,'plotOverviewAxes'): # Check if a plotOverview has been created

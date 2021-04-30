@@ -119,7 +119,34 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="DataOverview_autoBin_button">
+              <property name="text">
+               <string>Auto Bin</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -142,10 +169,18 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="DataOverview_CAxisMax_lineEdit"/>
+           <widget class="QLineEdit" name="DataOverview_CAxisMax_lineEdit">
+            <property name="text">
+             <string>1</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QLineEdit" name="DataOverview_CAxisMin_lineEdit"/>
+           <widget class="QLineEdit" name="DataOverview_CAxisMin_lineEdit">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_6">
