@@ -309,12 +309,24 @@ class DataSetManager(DataSetManagerBase, DataSetManagerForm):
     def guiStateChanged(self,newState):
         if newState == States.EMPTY:
             self.guiWindow.ui.DataSet_NewDataSet_button.setStyleSheet(highlightStyle)
+            self.guiWindow.ui.DataSet_DeleteDataSet_button.setEnabled(False)
+            self.guiWindow.ui.DataSet_AddFiles_button.setEnabled(False)
+            self.guiWindow.ui.DataSet_DeleteFiles_button.setEnabled(False)
+
+
         else:
             self.guiWindow.ui.DataSet_NewDataSet_button.setStyleSheet(normalStyle)
+            self.guiWindow.ui.DataSet_DeleteDataSet_button.setEnabled(True)
 
         if newState == States.RAW:
             self.guiWindow.ui.DataSet_AddFiles_button.setStyleSheet(highlightStyle)
+            self.guiWindow.ui.DataSet_AddFiles_button.setEnabled(True)
+            self.guiWindow.ui.DataSet_DeleteFiles_button.setEnabled(False)
+
         else:
             self.guiWindow.ui.DataSet_AddFiles_button.setStyleSheet(normalStyle)
+
+        if newState == States.FULL:
+            self.guiWindow.ui.DataSet_DeleteFiles_button.setEnabled(True)
 
         self.guiWindow.updateDataFileLabels()
