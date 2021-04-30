@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 try:
     from DMCGui.src.main.python._tools import ProgressBarDecoratorArguments
     import DMCGui.src.main.python._tools as _GUItools
-    from DMCGui.src.main.python.GuiStates import States
+    from DMCGui.src.main.python.GuiStates import States,highlightStyle,normalStyle
 except ImportError:
     from _tools import ProgressBarDecoratorArguments
     from GuiStates import States,highlightStyle,normalStyle
