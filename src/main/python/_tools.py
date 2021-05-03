@@ -25,16 +25,17 @@ def ProgressBarDecoratorArguments(runningText='Running',completedText='Completed
                 errText = 'DMCGui encountered an error with the following error message:\n\n{}\n\n\n'.format(str(err))+\
                     'If this is a recurring error, that you believe should be fixed, please  feel free to copy the message and '+\
                     'send it in an email to "jakob.lass@psi.ch".'
-                
-                dialog(errText)
                 returnval = False
+                self.setProgressBarLabelText(failedText)
+                self.resetProgressBarTimed()
+                self.setProgressBarValue(0)
+                dialog(errText)
+
 
             self.setProgressBarMaximum(100)
             if returnval is not None:
                 if returnval is False:
                     self.setProgressBarValue(0)
-                    self.setProgressBarLabelText(failedText)
-                    self.resetProgressBarTimed()
                     return returnval
         
             self.setProgressBarValue(100)
