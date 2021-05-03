@@ -47,7 +47,9 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
         self.initdataOverviewManager()
         
     def initdataOverviewManager(self):    
-        self.guiWindow.dataOverviewManager_setCAxis_button_function = lambda:plotOverview(self.guiWindow)
+        self.guiWindow.dataOverviewManager_plotOverview_button_function = lambda:plotOverview(self.guiWindow)
+        self.guiWindow.dataOverviewManager_generateDatFile_button_function = lambda:generateDatFile(self.guiWindow)
+
         self.guiWindow.dataOverviewManager_updateGrid_function = lambda value=None:updateGrid(self.guiWindow,value)
         self.guiWindow.dataOverviewManager_updateTitle_function = lambda title=None:updateTitle(self.guiWindow,title)
         self.guiWindow.dataOverviewManager_updateCLim_function = lambda cmin=None,cmax=None:updateCLim(self.guiWindow,cmin=cmin,cmax=cmax)
@@ -62,7 +64,9 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
                 self.guiWindow.ui.__dict__[key] = value
 
     def setup(self):
-        self.guiWindow.ui.DataOverview_plot_button.clicked.connect(self.guiWindow.dataOverviewManager_setCAxis_button_function)
+        self.guiWindow.ui.DataOverview_plot_button.clicked.connect(self.guiWindow.dataOverviewManager_plotOverview_button_function)
+        self.guiWindow.ui.DataOverview_dat_button.clicked.connect(self.guiWindow.dataOverviewManager_generateDatFile_button_function)
+
         self.guiWindow.state_changed.connect(self.guiStateChanged)
 
         self.guiWindow.ui.DataOverview_CAxisMin_lineEdit.editingFinished.connect(lambda cmin=None:self.guiWindow.dataOverviewManager_updateCLim_function(cmin=cmin))
@@ -81,13 +85,18 @@ class dataOverviewManager(dataOverviewManagerBase, dataOverviewManagerForm):
     def guiStateChanged(self,newState):
         if not newState == States.FULL:
            self.guiWindow.ui.DataOverview_plot_button.setEnabled(False)
+           self.guiWindow.ui.DataOverview_dat_button.setEnabled(False)
            self.guiWindow.ui.DataOverview_autoBin_button.setEnabled(False)
            self.guiWindow.ui.DataOverview_plot_button.setStyleSheet(normalStyle)
+           self.guiWindow.ui.DataOverview_dat_button.setStyleSheet(normalStyle)
+           
            return
 
         self.guiWindow.ui.DataOverview_autoBin_button.setEnabled(True)
         self.guiWindow.ui.DataOverview_plot_button.setEnabled(True)
         self.guiWindow.ui.DataOverview_plot_button.setStyleSheet(highlightStyle)
+        self.guiWindow.ui.DataOverview_dat_button.setEnabled(True)
+        self.guiWindow.ui.DataOverview_dat_button.setStyleSheet(highlightStyle)
 
     def extractInputs(self):
         """Extract input parameters for plotting function
@@ -143,6 +152,34 @@ def plotOverview(self):
 
     self.windows.append(AX[0].get_figure())
     
+    return True
+
+
+@ProgressBarDecoratorArguments(runningText='Generating Dat File',completedText='Dat File Saved')  
+def generateDatFile(self):
+
+    # Get input parameters
+    setupDict = self.dataOverviewManager.extractInputs()
+
+    thetaBins = np.arange(setupDict['thetaStart']-0.5*setupDict['thetaStep'],
+                            setupDict['thetaStop'] +0.5*setupDict['thetaStep'],
+                            setupDict['thetaStep'])
+
+    ds = self.DataSetModel.getCurrentDataSet()
+    
+    
+    saveSettings,_ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File',ds[-1].folder)
+
+    if saveSettings is None or saveSettings == '':
+        return False
+
+    if not saveSettings.split('.')[-1] == 'dat':
+        saveSettings+='.dat'
+    
+    try:
+        ds.saveDatFile(saveSettings)
+    except:
+        return False
     return True
 
 def updateGrid(self,value=None):

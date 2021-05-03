@@ -289,6 +289,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="DataOverview_dat_button">
+        <property name="text">
+         <string>Generate Dat File</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
