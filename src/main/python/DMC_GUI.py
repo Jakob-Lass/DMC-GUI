@@ -65,18 +65,21 @@ home = str(Path.home())
 class DMCMainWindow(QtWidgets.QMainWindow):
     mask_changed = QtCore.pyqtSignal()
     state_changed = QtCore.pyqtSignal(Enum)
-    def __init__(self,AppContext):
+    def __init__(self,AppContext,splash_screen):
 
         super(DMCMainWindow, self).__init__()
 
+        self.splash_screen = splash_screen
+        self.splash_screen.setProgress(5.0,'loading assets')
         self.currentState = States.STARTUP
         self.ui = Ui_MainWindow()
+        self.splash_screen.setProgress(10.0,'setting up main window')
         self.AppContext = AppContext
         self.version = self.AppContext.build_settings['version']   
         ### Settings saved in .DMCGuiSettings
         self.settingsFile = path.join(home,'.DMCGuiSettings')
         self.views = []
-        guiSettings = loadSetting(self.settingsFile,'guiSettings')
+        #guiSettings = loadSetting(self.settingsFile,'guiSettings')
         
         
         #if guiSettings is None:
@@ -95,7 +98,7 @@ class DMCMainWindow(QtWidgets.QMainWindow):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(self.AppContext.get_resource('Icons/Own/icon.png')))
         self.setWindowIcon(icon)
-
+        self.splash_screen.setProgress(30.0,'loading tools')
         # List to hold all views that need to be setup
         self.views = []
         ## Set up DataSetManager
@@ -151,9 +154,11 @@ class DMCMainWindow(QtWidgets.QMainWindow):
 
         #setupGenerateScript(self)
         #self.update()
+        self.splash_screen.setProgress(60.0,'initializing menus')
         self.setupMenu()
         self.update()
         self.updateGuiState()
+        self.splash_screen.setProgress(90.0,'almost there')
         self.update()
         #self.stateMachine.run()
         self.update()
@@ -172,6 +177,7 @@ class DMCMainWindow(QtWidgets.QMainWindow):
     }"""
 
             self.setStyleSheet(self.styleSheet()+correctedArrows)
+        self.splash_screen.setProgress(100.1,'done!')
 
     def setupMenu(self): # Set up all QActions and menus
         self.ui.actionExit.setIcon(QtGui.QIcon(self.AppContext.get_resource('Icons/Own/cross-button.png')))
@@ -788,7 +794,7 @@ def updateSplash(splash,originalTime,updateInterval,padding='\n'*7+20*' '):
     points = int(1000.0*(currentTime-originalTime).total_seconds()/updateInterval)+1
 
     alignment = QtCore.Qt.AlignTop# | QtCore.Qt.AlignHCenter
-    splash.showMessage(padding+'Loading DMCGui'+'.'*points,color=QtGui.QColor(255,255,255),alignment=alignment)
+    #splash.showMessage(padding+'Loading DMCGui'+'.'*points,color=QtGui.QColor(255,255,255),alignment=alignment)
     #QTimer.singleShot(1000, updateSplash(splash,points+1) )
     QtWidgets.QApplication.processEvents()
 
