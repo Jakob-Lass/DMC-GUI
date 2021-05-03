@@ -7,6 +7,7 @@ except:
 
 # choose backend for matplotlib to be Qt5Agg. If not, no plots can be made :'-(
 import matplotlib
+import ctypes
 matplotlib.use('Qt5Agg')
 
 from DMCpy import _tools # Useful tools useful across DMC
@@ -177,6 +178,9 @@ class DMCMainWindow(QtWidgets.QMainWindow):
     }"""
 
             self.setStyleSheet(self.styleSheet()+correctedArrows)
+        elif sys.platform.lower() == 'win32': # Force windows to show icon in tool bar
+            myappid = 'ch.psi.dmc-gui' # 
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         self.splash_screen.setProgress(100.1,'done!')
 
     def setupMenu(self): # Set up all QActions and menus
